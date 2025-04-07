@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Relatório Consolidado</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+
+<!-- SVG Nuvens animadas -->
+<svg class="svg-cloud cloud-1" viewBox="0 0 640 512" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+    <path d="M537.6 226.6C531.5 161.7 477.2 112 410.3 112c-23.9 0-46.5 7.6-64.8 20.5C328.8 89.8 289.6 64 245.3 64c-56.4 0-102.7 42.2-108.7 96.2C60.4 167.6 0 235.5 0 320c0 79.5 64.5 144 144 144h368c70.7 0 128-57.3 128-128 0-66.3-50.7-120.7-114.4-127.4z"/>
+  </svg>
+  <svg class="svg-cloud cloud-2" viewBox="0 0 640 512" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+    <path d="M537.6 226.6C531.5 161.7 477.2 112 410.3 112c-23.9 0-46.5 7.6-64.8 20.5C328.8 89.8 289.6 64 245.3 64c-56.4 0-102.7 42.2-108.7 96.2C60.4 167.6 0 235.5 0 320c0 79.5 64.5 144 144 144h368c70.7 0 128-57.3 128-128 0-66.3-50.7-120.7-114.4-127.4z"/>
+  </svg>
+  <svg class="svg-cloud cloud-3" viewBox="0 0 640 512" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+    <path d="M537.6 226.6C531.5 161.7 477.2 112 410.3 112c-23.9 0-46.5 7.6-64.8 20.5C328.8 89.8 289.6 64 245.3 64c-56.4 0-102.7 42.2-108.7 96.2C60.4 167.6 0 235.5 0 320c0 79.5 64.5 144 144 144h368c70.7 0 128-57.3 128-128 0-66.3-50.7-120.7-114.4-127.4z"/>
+  </svg>
+  
+  <!-- Botão de troca de tema -->
+  <div id="theme-toggle-wrapper">
+    <div id="sun"></div>
+    <div id="moon"></div>
+    <button id="theme-toggle" aria-label="Alterar tema"></button>
+  </div>
+
+  <div class="container">
+    <h1>📊 Gerar Relatório Consolidado</h1>
+
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div class="message success">
+          {% for message in messages %}
+            <p>{{ message }}</p>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <form method="POST" enctype="multipart/form-data">
+      <!-- CSV Upload -->
+      <div class="drop-zone" id="csv_drop_zone">
+        <div class="icon-wrapper">
+          <i data-lucide="upload-cloud" class="lucide-icon"></i>
+        </div>
+        <p><strong>CSV do iFood</strong></p>
+        <p>📂 Arraste e solte aqui ou clique abaixo</p>
+        <input type="file" name="csv_file" id="csv_file" multiple required>
+        <div id="csv_preview" class="file-preview"></div>
+      </div>
+
+      <!-- Excel Upload -->
+      <div class="drop-zone" id="excel_drop_zone">
+        <div class="icon-wrapper">
+          <i data-lucide="file-spreadsheet" class="lucide-icon"></i>
+        </div>
+        <p><strong>Excel Trampay</strong></p>
+        <p>📂 Arraste e solte aqui ou clique abaixo</p>
+        <input type="file" name="excel_file" id="excel_file" multiple required>
+        <div id="excel_preview" class="file-preview"></div>
+      </div>
+
+      <button type="submit">🔄 Consolidar Arquivos</button>
+    </form>
+
+    <a href="{{ url_for('download_resultado') }}" class="download-link">📥 Baixar Último Relatório Gerado</a>
+  </div>
+
+  <script>
+    lucide.createIcons();
+    const toggleButton = document.getElementById('theme-toggle');
+    const body = document.body;
+
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    if (savedTheme === 'dark') {
+      body.classList.add('dark');
+    } else {
+      body.classList.add('light');
+    }
+
+    toggleButton.addEventListener('click', () => {
+      const isDark = body.classList.contains('dark');
+      if (isDark) {
+        body.classList.remove('dark');
+        body.classList.add('light');
+        localStorage.setItem('theme', 'light');
+      } else {
+        body.classList.remove('light');
+        body.classList.add('dark');
+        localStorage.setItem('theme', 'dark');
+      }
+
+      body.classList.remove('theme-transition');
+      void body.offsetWidth;
+      body.classList.add('theme-transition');
+    });
+
+    function setupDragAndDrop(dropZoneId, inputId, previewId) {
+      const dropZone = document.getElementById(dropZoneId);
+      const input = document.getElementById(inputId);
+      const preview = document.getElementById(previewId);
+
+      dropZone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        dropZone.classList.add('drag-over');
+      });
+
+      dropZone.addEventListener('dragleave', () => {
+        dropZone.classList.remove('drag-over');
+      });
+
+      dropZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropZone.classList.remove('drag-over');
+        input.files = e.dataTransfer.files;
+        showPreview(input.files, preview);
+      });
+
+      input.addEventListener('change', () => showPreview(input.files, preview));
+
+      function showPreview(files, container) {
+        const list = Array.from(files).map(f => `📄 ${f.name}`).join('<br>');
+        container.innerHTML = list;
+      }
+    }
+
+    setupDragAndDrop('csv_drop_zone', 'csv_file', 'csv_preview');
+    setupDragAndDrop('excel_drop_zone', 'excel_file', 'excel_preview');
+  </script>
+</body>
+</html>

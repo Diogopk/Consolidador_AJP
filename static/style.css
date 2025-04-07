@@ -1,0 +1,255 @@
+/* Importa fonte e configura base */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
+
+html, body {
+  font-family: 'Inter', sans-serif;
+  background-color: #f4f7fa;
+  color: #1a202c;
+  margin: 0;
+  padding: 0;
+  transition: background-color 0.6s ease, color 0.6s ease;
+  position: relative;
+  overflow-x: hidden;
+  height: 100%;
+}
+
+body::before,
+body::after,
+body::backdrop {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+  top: 0;
+  left: 0;
+}
+
+/* 🌥️ Nuvens SVG animadas */
+.svg-cloud {
+  position: fixed;
+  top: 50px;
+  left: -200px;
+  width: 300px;
+  height: auto;
+  opacity: 0.12;
+  z-index: -2;
+  animation: floatClouds 80s linear infinite;
+}
+
+.svg-cloud.cloud-2 {
+  top: 120px;
+  animation-duration: 120s;
+  opacity: 0.08;
+}
+
+.svg-cloud.cloud-3 {
+  top: 180px;
+  animation-duration: 100s;
+  opacity: 0.1;
+}
+
+@keyframes floatClouds {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(140vw); }
+}
+
+/* Resto do CSS mantido */
+
+
+/* Resto do CSS mantido como base para layout */
+.container {
+  background-color: #fff;
+  margin: 60px auto;
+  padding: 40px;
+  border-radius: 16px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  width: 100%;
+  max-width: 600px;
+  transition: background-color 0.6s ease;
+  position: relative;
+  z-index: 1;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.drop-zone {
+  border: 2px dashed #cbd5e0;
+  border-radius: 10px;
+  padding: 20px;
+  text-align: center;
+  background-color: #f7fafc;
+  position: relative;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-bottom: 12px;
+}
+
+.drop-zone:hover,
+.drop-zone.drag-over {
+  background-color: #e2e8f0;
+}
+
+.drop-zone input[type="file"] {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.file-preview {
+  margin-top: 10px;
+  font-size: 14px;
+}
+
+.icon-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.lucide-icon {
+  width: 36px;
+  height: 36px;
+  color: #2563eb;
+  animation: pulseLucide 1.6s infinite ease-in-out;
+}
+
+@keyframes pulseLucide {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.12); opacity: 0.75; }
+}
+
+button[type="submit"] {
+  padding: 14px;
+  border: none;
+  border-radius: 8px;
+  background-color: #2563eb;
+  color: white;
+  font-weight: bold;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+button[type="submit"]:hover {
+  background-color: #1d4ed8;
+}
+
+.download-link {
+  display: block;
+  margin-top: 20px;
+  text-align: center;
+  text-decoration: none;
+  color: #2563eb;
+  font-weight: 600;
+}
+
+.download-link:hover {
+  text-decoration: underline;
+}
+
+#theme-toggle-wrapper {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+  width: 50px;
+  height: 50px;
+}
+
+#theme-toggle {
+  position: absolute;
+  inset: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  z-index: 2;
+}
+
+#sun, #moon {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(1);
+  transition: all 0.5s ease-in-out;
+  z-index: 1;
+}
+
+#sun {
+  background: radial-gradient(circle at center, #facc15, #f59e0b);
+  border-radius: 50%;
+  box-shadow: 0 0 10px #facc15;
+}
+
+#moon {
+  background: radial-gradient(circle at center, #cbd5e1, #94a3b8);
+  border-radius: 50%;
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.5);
+  box-shadow: 0 0 10px #94a3b8;
+}
+
+body.dark #sun {
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.5);
+}
+
+body.dark #moon {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+body.theme-transition {
+  transition: background-color 1s ease, color 1s ease;
+}
+
+body.dark {
+  background-color: #1a202c;
+  color: #f7fafc;
+}
+
+body.dark .container {
+  background-color: #2d3748;
+  box-shadow: 0 8px 20px rgba(255, 255, 255, 0.05);
+}
+
+body.dark .drop-zone {
+  background-color: #4a5568;
+  border-color: #a0aec0;
+}
+
+body.dark .drop-zone p,
+body.dark h1,
+body.dark .download-link {
+  color: #edf2f7;
+}
+
+body.dark .file-preview {
+  color: #e2e8f0;
+}
+
+body.dark button[type="submit"] {
+  background-color: #4c51bf;
+}
+
+body.dark button[type="submit"]:hover {
+  background-color: #434190;
+}
+
+body.dark .lucide-icon {
+  color: #90cdf4;
+}
