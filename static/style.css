@@ -253,3 +253,30 @@ body.dark button[type="submit"]:hover {
 body.dark .lucide-icon {
   color: #90cdf4;
 }
+
+
+/* Estilização do seletor de tipo de relatório */
+.form-group select {
+  width: 100%;
+  padding: 10px 14px;
+  border: 2px solid var(--primary-color, #2563eb);
+  border-radius: 8px;
+  background-color: var(--background, #ffffff);
+  color: var(--text, #111827);
+  font-size: 16px;
+  font-weight: 500;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+  appearance: none;
+  outline: none;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.form-group select:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+}
+
+/* Container do form-group */
+.form-group {
+  margin-bottom: 20px;
+}
