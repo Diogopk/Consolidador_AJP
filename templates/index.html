@@ -8,17 +8,6 @@
 </head>
 <body>
 
-<!-- SVG Nuvens animadas -->
-<svg class="svg-cloud cloud-1" viewBox="0 0 640 512" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-    <path d="M537.6 226.6C531.5 161.7 477.2 112 410.3 112c-23.9 0-46.5 7.6-64.8 20.5C328.8 89.8 289.6 64 245.3 64c-56.4 0-102.7 42.2-108.7 96.2C60.4 167.6 0 235.5 0 320c0 79.5 64.5 144 144 144h368c70.7 0 128-57.3 128-128 0-66.3-50.7-120.7-114.4-127.4z"/>
-  </svg>
-  <svg class="svg-cloud cloud-2" viewBox="0 0 640 512" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-    <path d="M537.6 226.6C531.5 161.7 477.2 112 410.3 112c-23.9 0-46.5 7.6-64.8 20.5C328.8 89.8 289.6 64 245.3 64c-56.4 0-102.7 42.2-108.7 96.2C60.4 167.6 0 235.5 0 320c0 79.5 64.5 144 144 144h368c70.7 0 128-57.3 128-128 0-66.3-50.7-120.7-114.4-127.4z"/>
-  </svg>
-  <svg class="svg-cloud cloud-3" viewBox="0 0 640 512" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-    <path d="M537.6 226.6C531.5 161.7 477.2 112 410.3 112c-23.9 0-46.5 7.6-64.8 20.5C328.8 89.8 289.6 64 245.3 64c-56.4 0-102.7 42.2-108.7 96.2C60.4 167.6 0 235.5 0 320c0 79.5 64.5 144 144 144h368c70.7 0 128-57.3 128-128 0-66.3-50.7-120.7-114.4-127.4z"/>
-  </svg>
-  
   <!-- Botão de troca de tema -->
   <div id="theme-toggle-wrapper">
     <div id="sun"></div>
@@ -40,26 +29,50 @@
     {% endwith %}
 
     <form method="POST" enctype="multipart/form-data">
-      <!-- CSV Upload -->
-      <div class="drop-zone" id="csv_drop_zone">
-        <div class="icon-wrapper">
-          <i data-lucide="upload-cloud" class="lucide-icon"></i>
-        </div>
-        <p><strong>CSV do iFood</strong></p>
-        <p>📂 Arraste e solte aqui ou clique abaixo</p>
-        <input type="file" name="csv_file" id="csv_file" multiple required>
-        <div id="csv_preview" class="file-preview"></div>
+      <!-- Seleção do tipo de relatório -->
+      <div class="form-group">
+        <label for="tipo_relatorio"><strong>Tipo de relatório:</strong></label>
+        <select name="tipo_relatorio" id="tipo_relatorio" required>
+          <option value="">-- Escolha --</option>
+          <option value="financeiro">📊 Financeiro (iFood + Trampay)</option>
+          <option value="performance">📈 Performance</option>
+        </select>
       </div>
 
-      <!-- Excel Upload -->
-      <div class="drop-zone" id="excel_drop_zone">
-        <div class="icon-wrapper">
-          <i data-lucide="file-spreadsheet" class="lucide-icon"></i>
+      <!-- Uploads para FINANCEIRO -->
+      <div id="upload_financeiro" style="display: none;">
+        <div class="drop-zone" id="csv_drop_zone">
+          <div class="icon-wrapper">
+            <i data-lucide="upload-cloud" class="lucide-icon"></i>
+          </div>
+          <p><strong>CSV do iFood</strong></p>
+          <p>📂 Arraste e solte aqui ou clique abaixo</p>
+          <input type="file" name="csv_file" id="csv_file" multiple>
+          <div id="csv_preview" class="file-preview"></div>
         </div>
-        <p><strong>Excel Trampay</strong></p>
-        <p>📂 Arraste e solte aqui ou clique abaixo</p>
-        <input type="file" name="excel_file" id="excel_file" multiple required>
-        <div id="excel_preview" class="file-preview"></div>
+
+        <div class="drop-zone" id="excel_drop_zone">
+          <div class="icon-wrapper">
+            <i data-lucide="file-spreadsheet" class="lucide-icon"></i>
+          </div>
+          <p><strong>Excel Trampay</strong></p>
+          <p>📂 Arraste e solte aqui ou clique abaixo</p>
+          <input type="file" name="excel_file" id="excel_file" multiple>
+          <div id="excel_preview" class="file-preview"></div>
+        </div>
+      </div>
+
+      <!-- Uploads para PERFORMANCE -->
+      <div id="upload_performance" style="display: none;">
+        <div class="drop-zone" id="csv_performance_drop_zone">
+          <div class="icon-wrapper">
+            <i data-lucide="bar-chart" class="lucide-icon"></i>
+          </div>
+          <p><strong>CSV de Performance</strong></p>
+          <p>📂 Arraste e solte aqui ou clique abaixo</p>
+          <input type="file" name="csv_file_perf" id="csv_file_perf" multiple>
+          <div id="csv_performance_preview" class="file-preview"></div>
+        </div>
       </div>
 
       <button type="submit">🔄 Consolidar Arquivos</button>
@@ -70,31 +83,40 @@
 
   <script>
     lucide.createIcons();
+
     const toggleButton = document.getElementById('theme-toggle');
     const body = document.body;
 
     const savedTheme = localStorage.getItem('theme') || 'light';
-    if (savedTheme === 'dark') {
-      body.classList.add('dark');
-    } else {
-      body.classList.add('light');
-    }
+    body.classList.add(savedTheme);
 
     toggleButton.addEventListener('click', () => {
       const isDark = body.classList.contains('dark');
-      if (isDark) {
-        body.classList.remove('dark');
-        body.classList.add('light');
-        localStorage.setItem('theme', 'light');
-      } else {
-        body.classList.remove('light');
-        body.classList.add('dark');
-        localStorage.setItem('theme', 'dark');
-      }
+      body.classList.toggle('dark', !isDark);
+      body.classList.toggle('light', isDark);
+      localStorage.setItem('theme', isDark ? 'light' : 'dark');
 
       body.classList.remove('theme-transition');
       void body.offsetWidth;
       body.classList.add('theme-transition');
+    });
+
+    // Mostra/oculta campos conforme o tipo de relatório
+    const tipoRelatorio = document.getElementById("tipo_relatorio");
+    const financeiroSection = document.getElementById("upload_financeiro");
+    const performanceSection = document.getElementById("upload_performance");
+
+    tipoRelatorio.addEventListener("change", () => {
+      if (tipoRelatorio.value === "financeiro") {
+        financeiroSection.style.display = "block";
+        performanceSection.style.display = "none";
+      } else if (tipoRelatorio.value === "performance") {
+        financeiroSection.style.display = "none";
+        performanceSection.style.display = "block";
+      } else {
+        financeiroSection.style.display = "none";
+        performanceSection.style.display = "none";
+      }
     });
 
     function setupDragAndDrop(dropZoneId, inputId, previewId) {
@@ -126,8 +148,9 @@
       }
     }
 
-    setupDragAndDrop('csv_drop_zone', 'csv_file', 'csv_preview');
-    setupDragAndDrop('excel_drop_zone', 'excel_file', 'excel_preview');
+    setupDragAndDrop("csv_drop_zone", "csv_file", "csv_preview");
+    setupDragAndDrop("excel_drop_zone", "excel_file", "excel_preview");
+    setupDragAndDrop("csv_performance_drop_zone", "csv_file_perf", "csv_performance_preview");
   </script>
 </body>
 </html>
