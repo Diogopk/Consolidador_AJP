@@ -11,7 +11,7 @@ os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
 def consolidar_dados(lista_csv, lista_excel):
     df_csv = pd.concat([
-        pd.read_csv(file, sep=';', encoding='utf-8')
+        pd.read_csv(file, sep=';', encoding='latin1')
         for file in lista_csv
     ], ignore_index=True)
 
